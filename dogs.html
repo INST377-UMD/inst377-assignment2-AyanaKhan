@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>INST377 - Doggos</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glider-js@1/glider.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/glider-js@1/glider.min.js"></script>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="stocks.html">Stocks</a></li>
+      <li><a href="dogs.html">Dogs</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h1>Doggos! 🐶</h1>
+
+    <div class="glider-contain">
+      <div class="glider" id="dogCarousel"></div>
+    </div>
+
+    <div id="breedButtons" class="button-container"></div>
+
+    <div id="breedInfo" class="quote-box" style="display:none;">
+      <h3 id="breedName"></h3>
+      <p id="breedDesc"></p>
+      <p id="breedLife"></p>
+    </div>
+
+    <div class="audio-controls">
+      <h3>Voice Commands</h3>
+      <ul>
+        <li>Say: "Load dog breed Labrador"</li>
+        <li>Say: "Navigate to home"</li>
+        <li>Say: "Change the color to pink"</li>
+      </ul>
+      <button onclick="annyang.start()">Turn On Listening</button>
+      <button onclick="annyang.abort()">Turn Off Listening</button>
+    </div>
+  </main>
+
+  <script src="js/dogs.js"></script>
+</body>
+</html>

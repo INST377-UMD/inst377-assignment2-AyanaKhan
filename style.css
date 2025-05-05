@@ -1,0 +1,14 @@
+.breed-btn {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #7b68ee;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .breed-btn:hover {
+    background-color: #5a4dcf;
+  }
+  
