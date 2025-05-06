@@ -16,12 +16,15 @@ function getStockData(ticker = null, days = null) {
   fetch(url)
     .then(res => res.json())
     .then(data => {
+      if (!data.results || !data.results.length) {
+        throw new Error("No data returned");
+      }
+
       const labels = data.results.map(d => new Date(d.t).toLocaleDateString());
       const values = data.results.map(d => d.c);
 
       const ctx = document.getElementById('stockChart').getContext('2d');
-
-      if (chart) chart.destroy(); // Replace old chart
+      if (chart) chart.destroy();
 
       chart = new Chart(ctx, {
         type: 'line',
@@ -37,32 +40,49 @@ function getStockData(ticker = null, days = null) {
         }
       });
     })
-    .catch(err => alert("Stock not found or API issue."));
+    .catch(err => {
+      alert("Stock not found or API issue.");
+      console.error(err);
+    });
 }
 
-// Reddit Stock Table
+// Reddit Stock Table + Mini Chart Rows
 fetch('https://tradestie.com/api/v1/apps/reddit?date=2022-04-03')
   .then(res => res.json())
   .then(data => {
-    const top5 = data.slice(0, 5);
+    const top5 = data
+      .sort((a, b) => b.comment_count - a.comment_count)
+      .slice(0, 5);
+
     const tableBody = document.querySelector('#redditStocks tbody');
+    tableBody.innerHTML = '';
+
+    const miniChartContainer = document.getElementById('redditChartRows');
+    miniChartContainer.innerHTML = '';
 
     top5.forEach(stock => {
-      const row = document.createElement('tr');
-      const sentimentIcon = stock.sentiment === 'Bullish'
-        ? '<img src="images/bull.png" width="50">'
-        : '<img src="images/bear.png" width="50">';
+      const emoji = stock.sentiment === 'Bullish' ? '🐂' : '🐻';
 
+      const row = document.createElement('tr');
       row.innerHTML = `
         <td><a href="https://finance.yahoo.com/quote/${stock.ticker}" target="_blank">${stock.ticker}</a></td>
-        <td>${stock.no_of_comments}</td>
-        <td>${sentimentIcon}</td>
+        <td>${stock.comment_count}</td>
+        <td style="font-size: 28px;">${emoji}</td>
       `;
       tableBody.appendChild(row);
-    });
-  });
 
-// Annyang Voice Commands for Stocks
+      const miniRow = document.createElement('div');
+      miniRow.className = 'reddit-row';
+      miniRow.innerHTML = `
+        <a href="https://finance.yahoo.com/quote/${stock.ticker}" target="_blank">${stock.ticker}</a>
+        <span>${stock.comment_count} comments</span>
+        <span class="emoji">${emoji}</span>
+      `;
+      miniChartContainer.appendChild(miniRow);
+    });
+  })
+  .catch(err => console.error("Failed to load Reddit stock data:", err));
+
 if (annyang) {
   const commands = {
     'hello': () => alert("Hello World"),
@@ -80,5 +100,6 @@ if (annyang) {
       getStockData(stock.toUpperCase(), 30);
     }
   };
+
   annyang.addCommands(commands);
 }

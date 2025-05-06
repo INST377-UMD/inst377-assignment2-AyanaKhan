@@ -1,7 +1,10 @@
+
 fetch("https://dog.ceo/api/breeds/image/random/10")
   .then(res => res.json())
   .then(data => {
     const container = document.getElementById("dogCarousel");
+    container.innerHTML = ""; // Clear existing
+
     data.message.forEach(url => {
       const img = document.createElement("img");
       img.src = url;
@@ -13,17 +16,21 @@ fetch("https://dog.ceo/api/breeds/image/random/10")
     new Glider(container, {
       slidesToShow: 1,
       draggable: true,
-      scrollLock: true
+      scrollLock: true,
+      arrows: {
+        prev: '.glider-prev',
+        next: '.glider-next'
+      }
     });
   });
 
-// Load breed buttons
 fetch("https://api.thedogapi.com/v1/breeds")
   .then(res => res.json())
   .then(breeds => {
     const buttonContainer = document.getElementById("breedButtons");
+    const limitedBreeds = breeds.slice(0, 10);
 
-    breeds.forEach(breed => {
+    limitedBreeds.forEach(breed => {
       const btn = document.createElement("button");
       btn.textContent = breed.name;
       btn.className = "breed-btn";
@@ -37,10 +44,14 @@ fetch("https://api.thedogapi.com/v1/breeds")
 
       const commands = {
         'load dog breed *breed': breedName => {
-          const b = breedMap[breedName.toLowerCase()];
-          if (b) showBreedInfo(b);
+          const match = breedMap[breedName.toLowerCase()];
+          if (match) {
+            showBreedInfo(match);
+          } else {
+            alert(`Could not find "${breedName}". Try another.`);
+          }
         },
-        'hello': () => alert("Hello World"),
+        'hello': () => alert("Hello World!"),
         'change the color to *color': color => {
           document.body.style.backgroundColor = color;
         },
@@ -58,6 +69,12 @@ fetch("https://api.thedogapi.com/v1/breeds")
 function showBreedInfo(breed) {
   document.getElementById("breedName").textContent = `Name: ${breed.name}`;
   document.getElementById("breedDesc").textContent = `Description: ${breed.temperament || "N/A"}`;
-  document.getElementById("breedLife").textContent = `Min Life: ${breed.life_span.split(' - ')[0]}\nMax Life: ${breed.life_span.split(' - ')[1] || breed.life_span}`;
+
+  const lifeSpanParts = breed.life_span.split(' - ');
+  const minLife = lifeSpanParts[0];
+  const maxLife = lifeSpanParts[1] || lifeSpanParts[0];
+
+  document.getElementById("breedLife").textContent = `Min Life: ${minLife}\nMax Life: ${maxLife}`;
   document.getElementById("breedInfo").style.display = "block";
 }
+

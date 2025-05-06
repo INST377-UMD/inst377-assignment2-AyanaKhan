@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -30,13 +29,14 @@
       <button onclick="getStockData()">Lookup</button>
     </div>
 
-    <!-- ✅ CHART STYLED LIKE A BOX -->
     <div class="chart-box">
       <h2>Stock Price Chart</h2>
       <canvas id="stockChart" width="800" height="400"></canvas>
     </div>
 
     <h2>Top 5 Reddit Stocks</h2>
+    <div id="redditChartRows" class="reddit-rows"></div>
+
     <table id="redditStocks">
       <thead>
         <tr>
